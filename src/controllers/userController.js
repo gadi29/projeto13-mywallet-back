@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 
 dotenv.config();
 
@@ -12,5 +12,20 @@ mongoClient.connect().then(() => {
 
 
 export async function getUser (req, res) {
+	const { authorization } = req.headers;
+	const token = authorization?.replace('Bearer ', '');
 
+	try {
+		const user = await db.collection('sessions').findOne({ token });
+		console.log(user);
+		if (!user) {
+			return res.sendStatus(401);
+		}
+
+		const { name } = await db.collection('users').findOne({ _id: new ObjectId(user.userId) });
+		res.send(name);
+	} catch (error) {
+		console.error(error);
+		res.sendStatus(500);
+	}
 };

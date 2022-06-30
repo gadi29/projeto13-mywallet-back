@@ -44,5 +44,21 @@ export async function signUp (req, res) {
 };
 
 export async function signIn (req, res) {
+	const { email, password } = req.body;
 
+	try {
+		const user = await db.collection('users').findOne({ email });
+
+		if (user && bcrypt.compareSync(password, user.password)) {
+			const token = uuid();
+	
+			await db.collection('sessions').insertOne({ token, userId: user._id });
+			res.send(token);
+		} else {
+			res.sendStatus(401);
+		}
+	} catch (error) {
+		console.error(error);
+		res.sendStatus(500);
+	}
 };
