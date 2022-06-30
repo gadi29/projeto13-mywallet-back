@@ -15,7 +15,32 @@ mongoClient.connect().then(() => {
 
 
 export async function signUp (req, res) {
+	const user = req.body;
+	const userSchema = joi.object({
+		name: joi.string().pattern(/[a-zA-Z\u00C0-\u00FF]+/i).required(),
+		email: joi.string().email().required(),
+		password: joi.string().required() // pattern
+	});
 
+	const validateUser = userSchema.validate(user);
+	if (validateUser.error) {
+		return res.sendStatus(422);
+	}
+
+	try {
+		const existUser = await db.collection('users').findOne({ email: user.email });
+		if (existUser) {
+			return res.sendStatus(409);
+		}
+
+		const passwordHash = bcrypt.hashSync(user.password, 10);
+
+		await db.collection('users').insertOne({ ...user, password: passwordHash });
+		res.sendStatus(201);
+	} catch (error) {
+		console.error(error);
+		res.sendStatus(500);
+	}
 };
 
 export async function signIn (req, res) {

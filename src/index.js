@@ -1,6 +1,8 @@
 import express, { json } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+
+// Controllers
 import { signUp, signIn } from './controllers/authControllers.js';
 import { getUser } from './controllers/userController.js';
 import { getCashFlow } from './controllers/cashController.js';
@@ -8,7 +10,6 @@ import { newEntry, editEntry, deleteEntry } from './controllers/entryController.
 import { newExit, editExit, deleteExit } from './controllers/exitController.js';
 
 dotenv.config();
-
 const app = express();
 app.use(json());
 app.use(cors());
