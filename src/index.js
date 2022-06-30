@@ -1,22 +1,38 @@
 import express, { json } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { MongoClient } from 'mongodb';
-import bcrypt from 'bcrypt';
-import joi from 'joi';
+import { signUp, signIn } from './controllers/authControllers.js';
+import { getUser } from './controllers/userController.js';
+import { getCashFlow } from './controllers/cashController.js';
+import { newEntry, editEntry, deleteEntry } from './controllers/entryController.js';
+import { newExit, editExit, deleteExit } from './controllers/exitController.js';
+
+dotenv.config();
 
 const app = express();
 app.use(json());
 app.use(cors());
-dotenv.config();
 
-const mongoClient = new MongoClient(process.env.MONGO_URI);
-let db;
 
-mongoClient.connect().then(() => {
-	db = mongoClient.db(process.env.MONGO_DATABASE);
-});
+// Authentication routes
+app.post('/sign-up', signUp);
+app.post('/sign-in', signIn);
 
+// User route
+app.get('/user', getUser);
+
+// Cash route
+app.get('/cash-flow', getCashFlow);
+
+// Entries routes
+app.post('/entry', newEntry);
+app.put('/entry', editEntry);
+app.delete('/entry', deleteEntry);
+
+// Exits routes
+app.post('/exit', newExit);
+app.put('/exit', editExit);
+app.delete('/exit', deleteExit);
 
 
 const PORT = process.env.PORT || 5001;
