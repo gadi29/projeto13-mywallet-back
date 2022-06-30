@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 
 dotenv.config();
 
@@ -11,6 +11,20 @@ mongoClient.connect().then(() => {
 });
 
 
-export async function getCashFlow(req, res) {
+export async function getCashFlow (req, res) {
+	const { authorization } = req.headers;
+	const token = authorization?.replace('Bearer ', '');
 
+	try {
+		const user = await db.collection('sessions').findOne({ token });
+		if (!user) {
+			return res.sendStatus(401);
+		}
+
+		const cashFlow = await db.collection('entries').find({ userId: new ObjectId(user.userId) }, { userId: 0 }).toArray();
+		res.send(cashFlow).status(200);
+	} catch (error) {
+		console.error(error);
+		res.sendStatus(500);
+	}
 };

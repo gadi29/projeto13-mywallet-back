@@ -17,7 +17,6 @@ export async function getUser (req, res) {
 
 	try {
 		const user = await db.collection('sessions').findOne({ token });
-		console.log(user);
 		if (!user) {
 			return res.sendStatus(401);
 		}

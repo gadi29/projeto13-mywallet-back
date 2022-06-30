@@ -11,6 +11,10 @@ mongoClient.connect().then(() => {
 });
 
 
+export async function getExit (req, res) {
+	
+}
+
 export async function newExit (req, res) {
 
 };

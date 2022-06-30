@@ -27,13 +27,13 @@ app.get('/cash-flow', getCashFlow);
 
 // Entries routes
 app.post('/entry', newEntry);
-app.put('/entry', editEntry);
-app.delete('/entry', deleteEntry);
+app.put('/entry/:id', editEntry);
+app.delete('/entry/:id', deleteEntry);
 
 // Exits routes
 app.post('/exit', newExit);
-app.put('/exit', editExit);
-app.delete('/exit', deleteExit);
+app.put('/exit/:id', editExit);
+app.delete('/exit/:id', deleteExit);
 
 
 const PORT = process.env.PORT || 5001;
