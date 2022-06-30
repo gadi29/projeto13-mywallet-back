@@ -11,6 +11,7 @@ mongoClient.connect().then(() => {
 	db = mongoClient.db(process.env.MONGO_DATABASE);
 });
 
+
 export async function newEntry (req, res) {
 	const entry = req.body;
 	const { authorization } = req.headers;
@@ -33,7 +34,7 @@ export async function newEntry (req, res) {
 			return res.sendStatus(401);
 		}
 
-		const thisEntry = await db.collection('entries').insertOne({ ...entry, date: Date.now(), userId: new ObjectId(user.userId) });
+		const thisEntry = await db.collection('cash-flow').insertOne({ ...entry, date: Date.now(), userId: new ObjectId(user.userId) });
 		res.send(thisEntry.insertedId).status(201);
 	} catch (error) {
 		console.error(error);
@@ -65,12 +66,12 @@ export async function editEntry (req, res) {
 			return res.sendStatus(401);
 		}
 
-		const entry = await db.collection('entries').findOne({ _id: new ObjectId(id) });
+		const entry = await db.collection('cash-flow').findOne({ _id: new ObjectId(id) });
 		if (!entry) {
 			return res.sendStatus(404);
 		}
 
-		await db.collection('entries').updateOne({ 
+		await db.collection('cash-flow').updateOne({ 
 			_id: entry._id
 		 }, { $set: { ...entry, value, description } });
 		 
@@ -82,5 +83,25 @@ export async function editEntry (req, res) {
 };
 
 export async function deleteEntry (req, res) {
+	const { id } = req.params;
+	const { authorization } = req.headers;
+	const token = authorization?.replace('Bearer ', '');
 
+	try {
+		const user = await db.collection('sessions').findOne({ token });
+		if (!user) {
+			return res.sendStatus(401);
+		}
+
+		const entry = await db.collection('cash-flow').findOne({ _id: new ObjectId(id) });
+		if (!entry) {
+			return res.sendStatus(404);
+		}
+
+		await db.collection('cash-flow').deleteOne({ _id: new ObjectId(id) });
+		res.sendStatus(200);
+	} catch (error) {
+		console.error(error);
+		res.sendStatus(500);
+	}
 };

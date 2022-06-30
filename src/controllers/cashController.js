@@ -21,7 +21,7 @@ export async function getCashFlow (req, res) {
 			return res.sendStatus(401);
 		}
 
-		const cashFlow = await db.collection('entries').find({ userId: new ObjectId(user.userId) }, { userId: 0 }).toArray();
+		const cashFlow = await db.collection('cash-flow').find({ userId: new ObjectId(user.userId) }, { userId: 0 }).toArray();
 		res.send(cashFlow).status(200);
 	} catch (error) {
 		console.error(error);
