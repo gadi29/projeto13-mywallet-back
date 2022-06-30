@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import joi from 'joi';
+import dayjs from 'dayjs';
 import { MongoClient, ObjectId } from 'mongodb';
 
 dotenv.config();
@@ -34,8 +35,8 @@ export async function newEntry (req, res) {
 			return res.sendStatus(401);
 		}
 
-		const thisEntry = await db.collection('cash-flow').insertOne({ ...entry, date: Date.now(), userId: new ObjectId(user.userId) });
-		res.send(thisEntry.insertedId).status(201);
+		const thisEntry = await db.collection('cashflow').insertOne({ ...entry, date: `${dayjs().date()}/${dayjs().month()}`, userId: new ObjectId(user.userId) });
+		res.sendStatus(201);
 	} catch (error) {
 		console.error(error);
 		res.sendStatus(500);
@@ -66,12 +67,12 @@ export async function editEntry (req, res) {
 			return res.sendStatus(401);
 		}
 
-		const entry = await db.collection('cash-flow').findOne({ _id: new ObjectId(id) });
+		const entry = await db.collection('cashflow').findOne({ _id: new ObjectId(id) });
 		if (!entry) {
 			return res.sendStatus(404);
 		}
 
-		await db.collection('cash-flow').updateOne({ 
+		await db.collection('cashflow').updateOne({ 
 			_id: entry._id
 		 }, { $set: { ...entry, value, description } });
 		 
@@ -93,12 +94,12 @@ export async function deleteEntry (req, res) {
 			return res.sendStatus(401);
 		}
 
-		const entry = await db.collection('cash-flow').findOne({ _id: new ObjectId(id) });
+		const entry = await db.collection('cashflow').findOne({ _id: new ObjectId(id) });
 		if (!entry) {
 			return res.sendStatus(404);
 		}
 
-		await db.collection('cash-flow').deleteOne({ _id: new ObjectId(id) });
+		await db.collection('cashflow').deleteOne({ _id: new ObjectId(id) });
 		res.sendStatus(200);
 	} catch (error) {
 		console.error(error);

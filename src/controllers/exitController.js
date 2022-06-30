@@ -34,7 +34,7 @@ export async function newExit (req, res) {
 			return res.sendStatus(401);
 		}
 
-		const thisExit = await db.collection('cash-flow').insertOne({ ...exit, date: Date.now(), userId: new ObjectId(user.userId) });
+		const thisExit = await db.collection('cashflow').insertOne({ ...exit, date: Date.now(), userId: new ObjectId(user.userId) });
 		res.send(thisExit.insertedId).status(201);
 	} catch (error) {
 		console.error(error);
@@ -66,12 +66,12 @@ export async function editExit (req, res) {
 			return res.sendStatus(401);
 		}
 
-		const exit = await db.collection('cash-flow').findOne({ _id: new ObjectId(id) });
+		const exit = await db.collection('cashflow').findOne({ _id: new ObjectId(id) });
 		if (!exit) {
 			return res.sendStatus(404);
 		}
 
-		await db.collection('cash-flow').updateOne({ 
+		await db.collection('cashflow').updateOne({ 
 			_id: exit._id
 		 }, { $set: { ...exit, value, description } });
 		 
@@ -93,12 +93,12 @@ export async function deleteExit (req, res) {
 			return res.sendStatus(401);
 		}
 
-		const exit = await db.collection('cash-flow').findOne({ _id: new ObjectId(id) });
+		const exit = await db.collection('cashflow').findOne({ _id: new ObjectId(id) });
 		if (!exit) {
 			return res.sendStatus(404);
 		}
 
-		await db.collection('cash-flow').deleteOne({ _id: new ObjectId(id) });
+		await db.collection('cashflow').deleteOne({ _id: new ObjectId(id) });
 		res.sendStatus(200);
 	} catch (error) {
 		console.error(error);

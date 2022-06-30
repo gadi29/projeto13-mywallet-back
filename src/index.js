@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 
 // Controllers
 import { signUp, signIn } from './controllers/authControllers.js';
-import { getUser } from './controllers/userController.js';
 import { getCashFlow } from './controllers/cashController.js';
 import { newEntry, editEntry, deleteEntry } from './controllers/entryController.js';
 import { newExit, editExit, deleteExit } from './controllers/exitController.js';
@@ -18,9 +17,6 @@ app.use(cors());
 // Authentication routes
 app.post('/sign-up', signUp);
 app.post('/sign-in', signIn);
-
-// User route
-app.get('/user', getUser);
 
 // Cash route
 app.get('/cash-flow', getCashFlow);
