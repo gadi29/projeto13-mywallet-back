@@ -1,15 +1,5 @@
-import dotenv from 'dotenv';
 import joi from 'joi';
-import { MongoClient, ObjectId } from 'mongodb';
-
-dotenv.config();
-
-const mongoClient = new MongoClient(process.env.MONGO_URI);
-let db;
-
-mongoClient.connect().then(() => {
-	db = mongoClient.db(process.env.MONGO_DATABASE);
-});
+import { db, objectId } from '../db/mongo.js';
 
 
 export async function getRegisters (req, res) {
@@ -22,7 +12,7 @@ export async function getRegisters (req, res) {
 			return res.sendStatus(401);
 		}
 
-		const cashFlow = await db.collection('cashflow').find({ userId: new ObjectId(user.userId) }, { userId: 0 }).toArray();
+		const cashFlow = await db.collection('cashflow').find({ userId: new objectId(user.userId) }, { userId: 0 }).toArray();
 		res.send(cashFlow).status(200);
 	} catch (error) {
 		console.error(error);
@@ -34,7 +24,7 @@ export async function getRegister (req, res) {
 	const { id } = req.params;
 
 	try {
-		const register = await db.collection('cashflow').findOne({ _id: new ObjectId(id) }, { userId: 0 });
+		const register = await db.collection('cashflow').findOne({ _id: new objectId(id) }, { userId: 0 });
 		res.send(register).status(200);
 	} catch (error) {
 		console.error(error);
@@ -66,7 +56,7 @@ export async function editRegister (req, res) {
 			return res.sendStatus(401);
 		}
 
-		const register = await db.collection('cashflow').findOne({ _id: new ObjectId(id) });
+		const register = await db.collection('cashflow').findOne({ _id: new objectId(id) });
 		if (!register) {
 			return res.sendStatus(404);
 		}
@@ -86,12 +76,12 @@ export async function deleteRegister (req, res) {
 	const { id } = req.params;
 
 	try {
-		const register = await db.collection('cashflow').findOne({ _id: new ObjectId(id) });
+		const register = await db.collection('cashflow').findOne({ _id: new objectId(id) });
 		if (!register) {
 			return res.sendStatus(404);
 		}
 
-		await db.collection('cashflow').deleteOne({ _id: new ObjectId(id) });
+		await db.collection('cashflow').deleteOne({ _id: new objectId(id) });
 		res.sendStatus(200);
 	} catch (error) {
 		console.error(error);

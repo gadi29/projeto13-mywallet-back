@@ -1,16 +1,6 @@
-import dotenv from 'dotenv';
 import joi from 'joi';
 import dayjs from 'dayjs';
-import { MongoClient, ObjectId } from 'mongodb';
-
-dotenv.config();
-
-const mongoClient = new MongoClient(process.env.MONGO_URI);
-let db;
-
-mongoClient.connect().then(() => {
-	db = mongoClient.db(process.env.MONGO_DATABASE);
-});
+import { db, objectId } from '../db/mongo.js';
 
 
 export async function newEntry (req, res) {
@@ -35,7 +25,7 @@ export async function newEntry (req, res) {
 			return res.sendStatus(401);
 		}
 
-		const thisEntry = await db.collection('cashflow').insertOne({ ...entry, date: { day: dayjs().date(), month: (dayjs().month() + 1), year: dayjs().year() }, userId: new ObjectId(user.userId) });
+		const thisEntry = await db.collection('cashflow').insertOne({ ...entry, date: { day: dayjs().date(), month: (dayjs().month() + 1), year: dayjs().year() }, userId: new objectId(user.userId) });
 		res.sendStatus(201);
 	} catch (error) {
 		console.error(error);
