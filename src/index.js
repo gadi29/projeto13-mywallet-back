@@ -4,9 +4,9 @@ import dotenv from 'dotenv';
 
 // Controllers
 import { signUp, signIn } from './controllers/authControllers.js';
-import { getCashFlow } from './controllers/cashController.js';
-import { newEntry, editEntry, deleteEntry } from './controllers/entryController.js';
-import { newExit, editExit, deleteExit } from './controllers/exitController.js';
+import { getRegisters, getRegister, editRegister, deleteRegister } from './controllers/registersController.js';
+import { newEntry } from './controllers/entryController.js';
+import { newExit } from './controllers/exitController.js';
 
 dotenv.config();
 const app = express();
@@ -18,18 +18,17 @@ app.use(cors());
 app.post('/sign-up', signUp);
 app.post('/sign-in', signIn);
 
-// Cash route
-app.get('/cash-flow', getCashFlow);
+// Registers routes
+app.get('/registers', getRegisters);
+app.get('/registers/:id', getRegister);
+app.put('/registers/:id', editRegister);
+app.delete('/registers/:id', deleteRegister);
 
 // Entries routes
 app.post('/entry', newEntry);
-app.put('/entry/:id', editEntry);
-app.delete('/entry/:id', deleteEntry);
 
 // Exits routes
 app.post('/exit', newExit);
-app.put('/exit/:id', editExit);
-app.delete('/exit/:id', deleteExit);
 
 
 const PORT = process.env.PORT || 5001;
