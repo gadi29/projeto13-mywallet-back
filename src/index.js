@@ -5,6 +5,7 @@ import authRoutes from './routes/authRoutes.js';
 import registersRoutes from './routes/registersRoutes.js';
 import entryRouter from './routes/entryRouter.js';
 import exitRouter from './routes/exitRouter.js';
+import validateUser from './middlewares/validateUser.js';
 
 dotenv.config();
 
@@ -14,9 +15,9 @@ app.use(json());
 app.use(cors());
 
 app.use(authRoutes);
-app.use(registersRoutes);
-app.use(entryRouter);
-app.use(exitRouter);
+app.use(validateUser, registersRoutes);
+app.use(validateUser, entryRouter);
+app.use(validateUser, exitRouter);
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

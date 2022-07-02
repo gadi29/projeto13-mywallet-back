@@ -3,15 +3,9 @@ import { db, objectId } from '../db/mongo.js';
 
 
 export async function getRegisters (req, res) {
-	const { authorization } = req.headers;
-	const token = authorization?.replace('Bearer ', '');
+	const user = res.locals.user;
 
 	try {
-		const user = await db.collection('sessions').findOne({ token });
-		if (!user) {
-			return res.sendStatus(401);
-		}
-
 		const cashFlow = await db.collection('cashflow').find({ userId: new objectId(user.userId) }, { userId: 0 }).toArray();
 		res.send(cashFlow).status(200);
 	} catch (error) {
@@ -34,8 +28,6 @@ export async function getRegister (req, res) {
 
 export async function editRegister (req, res) {
 	const { id } = req.params;
-	const { authorization } = req.headers;
-	const token = authorization?.replace('Bearer ', '');
 	const newRegister = req.body;
 
 	const registerSchema = joi.object({
@@ -51,11 +43,6 @@ export async function editRegister (req, res) {
 	const { value, description } = newRegister;
 
 	try {
-		const user = await db.collection('sessions').findOne({ token });
-		if (!user) {
-			return res.sendStatus(401);
-		}
-
 		const register = await db.collection('cashflow').findOne({ _id: new objectId(id) });
 		if (!register) {
 			return res.sendStatus(404);

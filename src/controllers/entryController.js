@@ -5,8 +5,7 @@ import { db, objectId } from '../db/mongo.js';
 
 export async function newEntry (req, res) {
 	const entry = req.body;
-	const { authorization } = req.headers;
-	const token = authorization?.replace('Bearer ', '');
+	const user = res.locals.user;
 
 	const entrySchema = joi.object({
 		type: joi.string().valid('entry').required(),
@@ -20,11 +19,6 @@ export async function newEntry (req, res) {
 	}
 
 	try {
-		const user = await db.collection('sessions').findOne({ token });
-		if (!user) {
-			return res.sendStatus(401);
-		}
-
 		const thisEntry = await db.collection('cashflow').insertOne({ ...entry, date: { day: dayjs().date(), month: (dayjs().month() + 1), year: dayjs().year() }, userId: new objectId(user.userId) });
 		res.sendStatus(201);
 	} catch (error) {
