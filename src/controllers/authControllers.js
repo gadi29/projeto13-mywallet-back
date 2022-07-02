@@ -1,20 +1,9 @@
 import bcrypt from 'bcrypt';
-import joi from 'joi';
 import { v4 as uuid } from 'uuid';
 import { db } from '../db/mongo.js';
 
 export async function signUp (req, res) {
-	const user = req.body;
-	const userSchema = joi.object({
-		name: joi.string().pattern(/[a-zA-Z\u00C0-\u00FF]+/i).required(),
-		email: joi.string().email().required(),
-		password: joi.string().required() // pattern
-	});
-
-	const validateUser = userSchema.validate(user);
-	if (validateUser.error) {
-		return res.sendStatus(422);
-	}
+	const user = res.locals.user;
 
 	try {
 		const existUser = await db.collection('users').findOne({ email: user.email });

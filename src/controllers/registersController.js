@@ -1,4 +1,3 @@
-import joi from 'joi';
 import { db, objectId } from '../db/mongo.js';
 
 
@@ -27,20 +26,8 @@ export async function getRegister (req, res) {
 };
 
 export async function editRegister (req, res) {
+	const { value, description } = req.body;
 	const { id } = req.params;
-	const newRegister = req.body;
-
-	const registerSchema = joi.object({
-		value: joi.number().required(),
-		description: joi.string().trim().required()
-	})
-
-	const validateNewRegister = registerSchema.validate(newRegister);
-	if (validateNewRegister.error) {
-		return res.sendStatus(422);
-	}
-
-	const { value, description } = newRegister;
 
 	try {
 		const register = await db.collection('cashflow').findOne({ _id: new objectId(id) });
