@@ -1,12 +1,18 @@
 import { db, objectId } from '../db/mongo.js';
+import dayjs from 'dayjs';
 
 
 export async function getRegisters (req, res) {
 	const user = res.locals.user;
+	const { date } = req.params;
+	const monthRequired = `${date}`
 
 	try {
 		const cashFlow = await db.collection('cashflow').find({ userId: new objectId(user.userId) }, { userId: 0 }).toArray();
-		res.send(cashFlow).status(200);
+		const registers = cashFlow.map(cash => dayjs(cash.date).format('MM-YYYY'));
+		registers.filter(register => register.date === monthRequired);
+		
+		res.send(registers).status(200);
 	} catch (error) {
 		console.error(error);
 		res.sendStatus(500);

@@ -4,7 +4,7 @@ import editRegistersValidateMiddleware from '../middlewares/editRegistersValidat
 
 const router = Router();
 
-router.get('/registers', getRegisters);
+router.get('/registers/:date', getRegisters);
 router.get('/registers/:id', getRegister);
 router.put('/registers/:id', editRegistersValidateMiddleware, editRegister);
 router.delete('/registers/:id', deleteRegister);
