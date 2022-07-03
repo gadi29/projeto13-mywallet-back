@@ -9,8 +9,7 @@ export async function getRegisters (req, res) {
 
 	try {
 		const cashFlow = await db.collection('cashflow').find({ userId: new objectId(user.userId) }, { userId: 0 }).toArray();
-		const registers = cashFlow.map(cash => dayjs(cash.date).format('MM-YYYY'));
-		registers.filter(register => register.date === monthRequired);
+		const registers = cashFlow.filter(register => dayjs(register.date).format('MM-YYYY') === monthRequired);
 		
 		res.send(registers).status(200);
 	} catch (error) {
