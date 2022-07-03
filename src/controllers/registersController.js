@@ -31,7 +31,7 @@ export async function getRegister (req, res) {
 };
 
 export async function editRegister (req, res) {
-	const { value, description } = req.body;
+	const { value, description, date } = req.body;
 	const { id } = req.params;
 
 	try {
@@ -42,7 +42,7 @@ export async function editRegister (req, res) {
 
 		await db.collection('cashflow').updateOne({ 
 			_id: register._id
-		 }, { $set: { ...register, value, description } });
+		 }, { $set: { ...register, value, description, date } });
 		 
 		 res.sendStatus(200);
 	} catch (error) {
