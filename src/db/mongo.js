@@ -7,7 +7,7 @@ const mongoClient = new MongoClient(process.env.MONGO_URI);
 let db;
 
 mongoClient.connect().then(() => {
-	db = mongoClient.db("my_wallet");
+	db = mongoClient.db("Cluster0");
 });
 
 const objectId = ObjectId;
